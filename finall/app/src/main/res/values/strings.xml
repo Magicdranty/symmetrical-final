@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">finall</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_register">register</string>
+    <string name="title_activity_list">list</string>
+    <string name="openDrawer">OOOOOPPPPPEEEENNNN</string>
+    <string name="closeDrawer">CCCLLLOOOSSSEEE</string>
+    <string name="title_activity_inrealtime">inrealtime</string>
+    <string name="title_activity_addquestion">addquestion</string>
+    <string-array name="sorts">
+        <item>預設(不分類)</item>
+        <item>國文</item>
+        <item>英文</item>
+        <item>數學</item>
+        <item>自然</item>
+        <item>社會</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="sortforaddq1">
+        <item>請選擇!!!</item>
+        <item>國文</item>
+        <item>英文</item>
+        <item>數學</item>
+        <item>自然</item>
+        <item>社會</item>
+        <item>其他</item>
+    </string-array>
+    <string name="title_activity_addquestion1">addquestion1</string>
+    <string-array name="ans">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+    </string-array>
+    <string-array name="user">
+        <item>不限定</item>
+        <item>自己編輯</item>
+    </string-array>
+    <string name="title_activity_addtest">addtest</string>
+    <string name="title_activity_addtest1">addtest1</string>
+    <string name="title_activity_ininreal">ininreal</string>
+</resources>
