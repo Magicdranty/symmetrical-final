@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
     DrawerLayout drawerLayout;
     Spinner sp;
     int pos;
-
+    ImageView img;NavigationView view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,7 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
         setSupportActionBar(toolbar);
         ///
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
+        view = (NavigationView) findViewById(R.id.navigation_view);
         view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -95,6 +96,8 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
             connectuse x=(connectuse)addquestion.this.getApplication();
             tv2.setText(x.accountname);
             tv.setText(x.email);
+            img=(ImageView)header.findViewById(R.id.profile_image);
+            img.setImageBitmap(x.b);
         }
 //////
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
@@ -205,6 +208,22 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
     public void onResume() {
         super.onResume();
         renew();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectuse x = (connectuse) addquestion.this.getApplication();
+                    img.setImageBitmap(x.b);
+                }
+            });
+        }
+    }
+    public void headclick(View v) {
+        Intent it = new Intent(addquestion.this, fixhead.class);
+        startActivityForResult(it, 0);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

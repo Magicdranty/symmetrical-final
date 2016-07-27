@@ -1,23 +1,24 @@
 package com.example.jimmy.finall;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class inrealtime extends AppCompatActivity implements View.OnClickListener {
     DrawerLayout drawerLayout;
     Button b5, b6, b7, b8;
-    //String account, email;
+    ImageView img;NavigationView view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class inrealtime extends AppCompatActivity implements View.OnClickListene
         b8.setOnClickListener(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
+        view = (NavigationView) findViewById(R.id.navigation_view);
         view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -71,6 +72,8 @@ public class inrealtime extends AppCompatActivity implements View.OnClickListene
             connectuse x=(connectuse)inrealtime.this.getApplication();
             tv2.setText(x.accountname);
             tv.setText(x.email);
+            img=(ImageView)header.findViewById(R.id.profile_image);
+            img.setImageBitmap(x.b);
         }
 ///
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
@@ -131,8 +134,26 @@ public class inrealtime extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.button8:
                 Toast.makeText(this,"8",Toast.LENGTH_SHORT).show();
+                {Intent it=new Intent(this,forgrade.class);
+                startActivity(it);}
                 break;
 
         }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectuse x = (connectuse) inrealtime.this.getApplication();
+                    img.setImageBitmap(x.b);
+                }
+            });
+        }
+    }
+    public void headclick(View v) {
+        Intent it = new Intent(inrealtime.this, fixhead.class);
+        startActivityForResult(it, 0);
     }
 }

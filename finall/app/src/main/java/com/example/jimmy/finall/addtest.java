@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
     String account, email;
     Spinner sp, spuser;//sp選擇分類 spuser 選擇只看自己的或是全部人的
     int pos, posu;//pos分類的 posu編輯者
-
+    ImageView img;NavigationView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
         setSupportActionBar(toolbar);
         ////
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
+       view = (NavigationView) findViewById(R.id.navigation_view);
         view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -92,7 +93,8 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
             TextView tv2 = (TextView) header.findViewById(R.id.name);
             connectuse x=(connectuse)addtest.this.getApplication();
             tv2.setText(account=x.accountname);
-            tv.setText(email=x.email);
+            tv.setText(email=x.email);img=(ImageView)header.findViewById(R.id.profile_image);
+            img.setImageBitmap(x.b);
         }
         //////
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
@@ -302,5 +304,21 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectuse x = (connectuse) addtest.this.getApplication();
+                    img.setImageBitmap(x.b);
+                }
+            });
+        }
+    }
+    public void headclick(View v) {
+        Intent it = new Intent(addtest.this, fixhead.class);
+        startActivityForResult(it, 0);
     }
 }

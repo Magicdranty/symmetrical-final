@@ -67,7 +67,7 @@ public class addqAdapter  extends BaseAdapter {
         item.rootView = (addqMyLinearLayout)convertView.findViewById(R.id.lin_root);
         item.rootView.scrollTo(0, 0);
         item.rootView.setOnScrollListener(mScrollListener);
-        holder.del.setOnClickListener(mDelClickListener);
+        holder.del.setOnClickListener(mDelClickListener);//**
         holder.fix.setOnClickListener(mDelClickListener);
         return convertView;
     }

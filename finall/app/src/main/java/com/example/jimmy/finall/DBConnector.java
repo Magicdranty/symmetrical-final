@@ -31,7 +31,8 @@ public class DBConnector {
             httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);//连接时间
             httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 2000);
 
-            HttpPost httpPost = new HttpPost("http://192.168.100.2/aaa.php");
+            //HttpPost httpPost = new HttpPost("http://192.168.100.2/aaa.php");
+            HttpPost httpPost = new HttpPost("http://192.168.43.9/aaa.php");
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("query_string", query_string));
 
@@ -46,7 +47,7 @@ public class DBConnector {
             StringBuilder builder = new StringBuilder();
             String line = null;
             while ((line = bufReader.readLine()) != null) {
-                Log.e("111", line);
+                //Log.e("111", line);
                 if (!(line.startsWith("<"))) {
                     builder.append(line + "\n");
                     Log.e("000002", line);
