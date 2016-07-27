@@ -1,6 +1,8 @@
 package com.example.jimmy.finall;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,11 +18,13 @@ public class connectuse extends Application {
     private BufferedReader brt;
     private BufferedWriter bwt;
     String accountname,email;
+    ImageView img;Bitmap b;
     public  void init()
     {
         try {
             this.soc=new Socket();
-            SocketAddress addr=new InetSocketAddress("192.168.100.2",599);
+            //SocketAddress addr=new InetSocketAddress("192.168.100.2",599);
+            SocketAddress addr=new InetSocketAddress("192.168.43.9",599);
             soc.connect(addr,2000);
             brt=new BufferedReader(new InputStreamReader(soc.getInputStream(), "UTF-8"));
             bwt = new BufferedWriter(new OutputStreamWriter(soc.getOutputStream(), "UTF-8"));

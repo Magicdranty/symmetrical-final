@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
     private ininadapter inadt;
     Spinner sp, sp1;//sp for user sp1 for sort
     int pos, posu;
+    NavigationView view;
+    ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
         });
         ////
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
+        view = (NavigationView) findViewById(R.id.navigation_view);
         view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -98,6 +101,8 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
             connectuse x = (connectuse) ininreal.this.getApplication();
             tv2.setText(account = x.accountname);
             tv.setText(email = x.email);
+            img = (ImageView) header.findViewById(R.id.profile_image);
+            img.setImageBitmap(x.b);
         }
 ///
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
@@ -124,7 +129,7 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
         } else if (pos == 0 && posu != 0) {
             result = DBConnector.executeQuery("select  num,title,sort,situation from testlist where editor='" + account + "' order by sort");
         } else {
-                result = DBConnector.executeQuery("select  num,title,sort,situation from testlist order by sort");
+            result = DBConnector.executeQuery("select  num,title,sort,situation from testlist order by sort");
         }
         try {
             JSONArray jsonArray = new JSONArray(result);
@@ -143,6 +148,24 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
             Log.e("log_tag", e.toString());
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectuse x = (connectuse) ininreal.this.getApplication();
+                    img.setImageBitmap(x.b);
+                }
+            });
+        }
+    }
+
+    public void headclick(View v) {
+        Intent it = new Intent(ininreal.this, fixhead.class);
+        startActivityForResult(it, 0);
     }
 
     @Override
@@ -177,12 +200,12 @@ public class ininreal extends AppCompatActivity implements AdapterView.OnItemSel
                 pos = position;
                 break;
         }
-        Log.e("@@@@!",String .valueOf(position));
+        Log.e("@@@@!", String.valueOf(position));
         renew();
     }
 
     public void renew() {//刷新ADAPTER
-        Log.e("RENNNEWWW","!!!!!!!!!");
+        Log.e("RENNNEWWW", "!!!!!!!!!");
         items.clear();
         getdata();
         inadt = new ininadapter(this, items);

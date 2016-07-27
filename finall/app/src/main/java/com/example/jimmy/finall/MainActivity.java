@@ -1,6 +1,9 @@
 package com.example.jimmy.finall;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +19,14 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
     EditText acc, pwd;
+    connectuse x;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +42,18 @@ public class MainActivity extends AppCompatActivity {
                 .penaltyLog()
                 .penaltyDeath()
                 .build());
-       //
+        //
         acc = (EditText) findViewById(R.id.editText);
         pwd = (EditText) findViewById(R.id.e2);
+        x = (connectuse) MainActivity.this.getApplicationContext();
+
     }
+
     public void login(View v) {
         Thread thread = new Thread() {
             Bundle bundle = new Bundle();
             Message msg = new Message();
+
             @Override
             public void run() {
                 String stracc = acc.getText().toString();
@@ -54,28 +67,30 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         JSONArray jsonArray = new JSONArray(result);
                         JSONObject jsonData = jsonArray.getJSONObject(0);
-                        connectuse x=(connectuse)MainActivity.this.getApplicationContext();
-                        x.accountname=jsonData.getString("account");
-                        x.email=jsonData.getString("email");
-                        mhandler.obtainMessage(1).sendToTarget();
+                        x.accountname = jsonData.getString("account");
+                        x.email = jsonData.getString("email");
+                        headuse h = new headuse();
+                        h.start();
+
 
                     } catch (Exception e) {
                         Log.e("log_tag", e.toString());
                     }
                 }
-                msg.setData(bundle);
-                mhandler.sendMessage(msg);
+               // msg.setData(bundle);
+                //mhandler.sendMessage(msg);
             }
         };
         thread.start();
+
     }
+
     Handler mhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast tos=Toast.makeText(MainActivity.this,"", Toast.LENGTH_SHORT);
-            switch(msg.what)
-            {
+            Toast tos = Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT);
+            switch (msg.what) {
                 case 1:
                     Intent it = new Intent(MainActivity.this, list.class);
                     startActivity(it);
@@ -91,16 +106,45 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
     public void register(View v) {
         Intent intentreg = new Intent(this, register.class);
         startActivity(intentreg);
     }
+
+    class headuse extends Thread {
+        public void run() {
+            String imageUrl = ("http://192.168.43.9/uploads/"+x.accountname+".png");
+
+            try {
+                Log.e("!@!@!@", imageUrl);
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int status = connection.getResponseCode();
+                if (status == 404) {
+                    Resources res = getResources();
+                    x.b= BitmapFactory.decodeResource(res, R.drawable.zzz);
+                } else {
+                    InputStream input = connection.getInputStream();
+                    final Bitmap b = BitmapFactory.decodeStream(input);
+                    x.b = b;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mhandler.obtainMessage(1).sendToTarget();
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

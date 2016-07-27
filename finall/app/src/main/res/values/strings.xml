@@ -41,4 +41,8 @@
     <string name="title_activity_addtest">addtest</string>
     <string name="title_activity_addtest1">addtest1</string>
     <string name="title_activity_ininreal">ininreal</string>
+    <string name="title_activity_forgrade">forgrade</string>
+    <string name="title_activity_forgrade1">forgrade1</string>
+    <string name="title_activity_forgrade1_1">forgrade1_1</string>
+    <string name="title_activity_fixhead">fixhead</string>
 </resources>
