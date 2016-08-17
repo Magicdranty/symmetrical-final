@@ -1,6 +1,7 @@
 package com.example.jimmy.finall;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -39,7 +40,7 @@ public class forgrade1 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         view = (NavigationView) findViewById(R.id.navigation_view);
-        view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
+        view.getMenu().findItem(R.id.navigation_item_3).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -47,21 +48,24 @@ public class forgrade1 extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
-                        Intent it = new Intent(forgrade1.this, list.class);
+                        Intent it = new Intent(forgrade1.this, inrealtime.class);
                         it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(it);
                         break;
                     case R.id.navigation_item_2:
-                        Toast.makeText(forgrade1.this, "已經在及時測驗內", Toast.LENGTH_SHORT).show();
+                        Intent its = new Intent(forgrade1.this, ininreal.class);
+                        its.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(its);
                         break;
                     case R.id.navigation_item_3:
+                        Toast.makeText(forgrade1.this, "已經在成機查詢系統內", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_item_4:
+                        Intent it4 = new Intent(forgrade1.this, ballot.class);
+                        it4.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(it4);
                         break;
-                    case R.id.navigation_item_5:
-                        break;
-                    case R.id.navigation_item_6:
-                        break;
+                    case R.id.navigation_item_5: break;
                 }
                 return true;
             }
@@ -72,9 +76,10 @@ public class forgrade1 extends AppCompatActivity {
             TextView tv = (TextView) header.findViewById(R.id.textView2);
             TextView tv2 = (TextView) header.findViewById(R.id.name);
             connectuse x = (connectuse) forgrade1.this.getApplication();
-            tv2.setText(x.accountname);
-            tv.setText(x.email);
-            img = (ImageView) header.findViewById(R.id.profile_image);
+            SharedPreferences settings = getSharedPreferences("teacheruse_pref", 0);
+            tv.setText(settings.getString("email","XXX"));
+            tv2.setText(settings.getString("account","XXX"));
+            img=(ImageView)header.findViewById(R.id.profile_image);
             img.setImageBitmap(x.b);
         }
 //////
@@ -141,6 +146,7 @@ public class forgrade1 extends AppCompatActivity {
     }
 
     public void headclick(View v) {
+        drawerLayout.closeDrawers();
         Intent it = new Intent(forgrade1.this, fixhead.class);
         startActivityForResult(it, 0);
     }

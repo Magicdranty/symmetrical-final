@@ -1,10 +1,12 @@
 package com.example.jimmy.finall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,9 +43,10 @@ public class forgradeadapter1_1 extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.forgradeadapter1_1, null);
+            convertView = inflater.inflate(R.layout.forgradeitem1_1, null);
             holder.acc = (TextView) convertView.findViewById(R.id.acc);
             holder.sccore =(TextView) convertView.findViewById(R.id.score);
+            holder.img=(ImageView)convertView.findViewById(R.id.img);
             convertView.setTag(holder);
         } else {
             // 取出holder
@@ -52,12 +55,16 @@ public class forgradeadapter1_1 extends BaseAdapter {
         DataHolder item = mDataList.get(position);
         holder.acc.setText(item.saccount);
         holder.sccore.setText(item.score);
+        holder.img.setImageBitmap(item.head);
+
+
+
         return convertView;
     }
     public static class ViewHolder {
-        TextView acc, sccore;
+        TextView acc, sccore;ImageView img;
     }
     public static  class DataHolder {
-        String saccount,score;
+        String saccount,score;Bitmap head;
     }
 }

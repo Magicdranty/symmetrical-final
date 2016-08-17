@@ -45,4 +45,8 @@
     <string name="title_activity_forgrade1">forgrade1</string>
     <string name="title_activity_forgrade1_1">forgrade1_1</string>
     <string name="title_activity_fixhead">fixhead</string>
+    <string name="title_activity_ininwait">ininwait</string>
+    <string name="title_activity_ininrace">ininrace</string>
+    <string name="title_activity_ininranking">ininranking</string>
+    <string name="title_activity_ballot">ballot</string>
 </resources>

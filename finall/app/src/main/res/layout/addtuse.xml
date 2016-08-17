@@ -28,16 +28,4 @@
         android:id="@+id/spinner4"
         android:entries="@array/sorts" />
 
-    <TextView
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text="KEY:"
-        android:id="@+id/textView15"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:layout_width="177dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:maxLength="4" />
 </LinearLayout>

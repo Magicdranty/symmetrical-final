@@ -80,7 +80,7 @@ public class addquestion1 extends AppCompatActivity {
             if (fixoradd == false) {
                 String result = DBConnector.executeQuery("update question set sort='" + (sp2.getSelectedItemPosition()) + "', question='" + e1.getText() + "', A='" + e2.getText() + "',B='" + e3.getText() + "',C='" + e4.getText() + "',D='" + e5.getText() + "',ans='" + (sans[sp1.getSelectedItemPosition()]) + "' where id='" + id + "'");
             } else {
-                String result = DBConnector.executeQuery("insert into question(id,sort,question,A,B,C,D,ans) values('" + "" + "','" + (sp2.getSelectedItemPosition()+1) + "','" + e1.getText() + "','" + e2.getText() + "','" + e3.getText() + "','" + e4.getText() + "','" + e5.getText() + "','" + sans[sp1.getSelectedItemPosition()] + "')");
+                String result = DBConnector.executeQuery("insert into question(id,sort,question,A,B,C,D,ans) values('" + "" + "','" + (sp2.getSelectedItemPosition()) + "','" + e1.getText() + "','" + e2.getText() + "','" + e3.getText() + "','" + e4.getText() + "','" + e5.getText() + "','" + sans[sp1.getSelectedItemPosition()] + "')");
             }
             finish();
         }

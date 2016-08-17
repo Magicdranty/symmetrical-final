@@ -96,7 +96,7 @@ public class addtest1 extends AppCompatActivity {
     public void addgogo() {
 
         if (type.contains("fix")) {
-            String result = DBConnector.executeQuery("SELECT question.id FROM testinside,testlist,question where testlist.num=testinside.testtitleid  and testinside.questionid=question.id and testlist.num LIKE '%" + id + "%'");
+            String result = DBConnector.executeQuery("SELECT question.id FROM testinside,testlist,question where testlist.num=testinside.testtitleid  and testinside.questionid=question.id and testlist.num= '" + id + "'");
             Log.e("ZZZZ", result);
             try {
                 JSONArray jsonArray = new JSONArray(result);

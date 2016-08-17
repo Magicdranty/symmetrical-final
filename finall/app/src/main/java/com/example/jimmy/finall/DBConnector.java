@@ -22,7 +22,6 @@ public class DBConnector {
     public static String executeQuery(String query_string) {
 
         String result = "";
-
         try {
 
             HttpClient httpClient = new DefaultHttpClient();
@@ -31,8 +30,8 @@ public class DBConnector {
             httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);//连接时间
             httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 2000);
 
-            //HttpPost httpPost = new HttpPost("http://192.168.100.2/aaa.php");
-            HttpPost httpPost = new HttpPost("http://192.168.43.9/aaa.php");
+            HttpPost httpPost = new HttpPost("http://192.168.100.5/aaa.php");
+            //HttpPost httpPost = new HttpPost("http://140.118.148.151/aaa.php");
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("query_string", query_string));
 

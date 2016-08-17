@@ -1,6 +1,8 @@
 package com.example.jimmy.finall;
 
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +13,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jimmy on 2016/5/12.
- */
-public class ininadapter extends BaseAdapter {
+public class adapterforrank extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater = null;
     private List<DataHolder> mDataList = new ArrayList<DataHolder>();
 
-    public ininadapter(Context context, List<DataHolder> datalist) {
+    public adapterforrank(Context context, List<DataHolder> datalist) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         if (datalist != null && datalist.size() > 0) {
@@ -47,35 +46,32 @@ public class ininadapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.forinin, null);
-            holder.editor = (TextView) convertView.findViewById(R.id.editor);
-            holder.num = (TextView) convertView.findViewById(R.id.num);
-            holder.ininimg = (ImageView) convertView.findViewById(R.id.ininimg);
-            holder.inintitle = (TextView) convertView.findViewById(R.id.inintitle);
-
+            convertView = inflater.inflate(R.layout.itemforrank, null);
+            holder.no = (TextView) convertView.findViewById(R.id.ininno);
+            holder.img = (ImageView) convertView.findViewById(R.id.ininimg);
+            holder.title = (TextView) convertView.findViewById(R.id.inintitle);
+            holder.score=(TextView) convertView.findViewById(R.id.score);
             convertView.setTag(holder);
         } else {
             // 取出holder
             holder = (ViewHolder) convertView.getTag();
         }
-
-        int[] arr_pic = {R.drawable.chinese, R.drawable.english, R.drawable.math, R.drawable.science, R.drawable.socieity, R.drawable.other, R.drawable.all};
         DataHolder item = mDataList.get(position);
-        holder.ininimg.setImageResource(arr_pic[item.insort - 1]);
-        holder.inintitle.setText(item.intitle);
-        holder.num.setText(item.count);
-        holder.editor.setText(item.editor);
+        //if(position==0){ holder.img.setImageResource(R.drawable.crown);}
+        holder.img.setImageBitmap(item.b);
+        holder.title.setText(item.studentid);
+        holder.no.setText(String.valueOf(position + 1));
+        holder.score.setText(String.valueOf(item.score));
         return convertView;
     }
 
     public static class ViewHolder {
-        TextView editor,num, inintitle;
-        ImageView ininimg;
+        TextView no, title,score;
+        ImageView img;
     }
 
     public static class DataHolder {
-        public String intitle,idd,editor,count,pft;
-        public int insort;
-
+        public String  studentid;Bitmap b;
+        int score;
     }
 }

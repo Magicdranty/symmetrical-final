@@ -2,6 +2,7 @@ package com.example.jimmy.finall;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -59,7 +59,6 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
         ////
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
        view = (NavigationView) findViewById(R.id.navigation_view);
-        view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -67,21 +66,20 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
                 drawerLayout.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
-                        Intent it = new Intent(addtest.this, list.class);
+                        Intent it = new Intent(addtest.this,inrealtime.class);
                         it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(it);
                         break;
                     case R.id.navigation_item_2:
-                        Toast.makeText(addtest.this, "已經在及時測驗內", Toast.LENGTH_SHORT).show();
+                        Intent its = new Intent(addtest.this, ininreal.class);
+                        its.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(its);
                         break;
                     case R.id.navigation_item_3:
                         break;
                     case R.id.navigation_item_4:
                         break;
-                    case R.id.navigation_item_5:
-                        break;
-                    case R.id.navigation_item_6:
-                        break;
+
                 }
                 return true;
             }
@@ -92,8 +90,10 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
             TextView tv = (TextView) header.findViewById(R.id.textView2);
             TextView tv2 = (TextView) header.findViewById(R.id.name);
             connectuse x=(connectuse)addtest.this.getApplication();
-            tv2.setText(account=x.accountname);
-            tv.setText(email=x.email);img=(ImageView)header.findViewById(R.id.profile_image);
+            SharedPreferences settings = getSharedPreferences("teacheruse_pref", 0);
+            tv.setText(settings.getString("email","XXX"));
+            tv2.setText(account=settings.getString("account","XXX"));
+            img=(ImageView)header.findViewById(R.id.profile_image);
             img.setImageBitmap(x.b);
         }
         //////
@@ -154,27 +154,6 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
         addqAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_addtest, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onClick(final View v) {
@@ -235,21 +214,30 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
                             public void onClick(DialogInterface dialog, int which) {
                                 int sort;
                                 EditText edittitle = (EditText) vv.findViewById(R.id.titlesss);
-                                EditText editkey = (EditText) vv.findViewById(R.id.editText2);
                                 Spinner sortsp = (Spinner) vv.findViewById(R.id.spinner4);
+                                String buff;
+                                //先確認名稱沒有重複
                                 if ((DBConnector.executeQuery("select num from testlist where title='" + edittitle.getText().toString() + "'")).contains(("null"))) {
+                                    while(true)
+                                    {/////////這邊卻認KEYIN 沒有跟其他測驗重複
+                                        buff=forrand();
+                                        String ss = DBConnector.executeQuery("select KEYIN from testlist where KEYIN='" +buff + "'");
+                                        if (ss.contains("null")) {
+                                            Log.e("!!!!!", "create unique pinforaccess");
+                                            break;
+                                        }
+                                    }
                                     if (sortsp.getSelectedItemPosition() == 0) {
                                         sort = 7;
                                     } else sort = sortsp.getSelectedItemPosition();
-                                    String res = DBConnector.executeQuery("insert into testlist(editor,sort,title,KEYIN,situation) values ('" + account + "','" + sort + "','" + edittitle.getText().toString() + "','" + editkey.getText().toString() + "','0')");
+                                    String res = DBConnector.executeQuery("insert into testlist(editor,sort,title,KEYIN,situation) values ('" + account + "','" + sort + "','" + edittitle.getText().toString() + "','" + buff + "','0')");
                                     Intent it = new Intent(addtest.this, addtest1.class);///測驗名稱不能一樣
-                                    //it.putExtra("title", edittitle.getText().toString());
                                     if (String.valueOf(sortsp.getSelectedItemPosition()).equals("0")) {
                                         it.putExtra("sort", "7");
                                     } else {
                                         it.putExtra("sort", String.valueOf(sortsp.getSelectedItemPosition()));
                                     }
-                                    String xx=DBConnector.executeQuery("select num from testlist where title='" + edittitle.getText().toString() + "'");
+                                    String xx=DBConnector.executeQuery("select num from testlist where KEYIN='" + buff + "'");
                                     try {
                                         JSONArray jsonArray = new JSONArray(xx);
                                         JSONObject jsonData = jsonArray.getJSONObject(0);
@@ -318,7 +306,27 @@ public class addtest extends AppCompatActivity implements addqMyLinearLayout.OnC
         }
     }
     public void headclick(View v) {
+        drawerLayout.closeDrawers();
         Intent it = new Intent(addtest.this, fixhead.class);
         startActivityForResult(it, 0);
+    }
+
+
+    public String forrand() {
+        StringBuffer xs = new StringBuffer();
+        int x = (int) ((Math.random() * 7) % 4);//0~3 數字個數
+        for (int i = 0; i < 4; i++) {
+            int s = (int) ((Math.random() * 10) % 2);//0 代表抓數字
+            if (s == 0 && x != 0) {
+                xs.append((char) ((int) ((Math.random() * 11) % 10) + 48));
+                x--;
+            } else if (s == 1) {
+                xs.append((char) ((int) (((Math.random() * 26) + 65))));
+            } else {
+                i--;
+            }
+        }
+        return  xs.toString();
+
     }
 }

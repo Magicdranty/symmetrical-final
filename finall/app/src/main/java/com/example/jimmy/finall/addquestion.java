@@ -2,6 +2,7 @@ package com.example.jimmy.finall;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -61,7 +62,6 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
         ///
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         view = (NavigationView) findViewById(R.id.navigation_view);
-        view.getMenu().findItem(R.id.navigation_item_2).setChecked(true);
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -69,21 +69,20 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
                 drawerLayout.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
-                        Intent it = new Intent(addquestion.this, list.class);
+                        Intent it = new Intent(addquestion.this, inrealtime.class);
                         it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(it);
                         break;
                     case R.id.navigation_item_2:
-                        Toast.makeText(addquestion.this, "已經在及時測驗內", Toast.LENGTH_SHORT).show();
+                        Intent its = new Intent(addquestion.this, ininreal.class);
+                        its.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(its);
                         break;
                     case R.id.navigation_item_3:
                         break;
                     case R.id.navigation_item_4:
                         break;
-                    case R.id.navigation_item_5:
-                        break;
-                    case R.id.navigation_item_6:
-                        break;
+
                 }
                 return true;
             }
@@ -94,8 +93,9 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
             TextView tv = (TextView) header.findViewById(R.id.textView2);
             TextView tv2 = (TextView) header.findViewById(R.id.name);
             connectuse x=(connectuse)addquestion.this.getApplication();
-            tv2.setText(x.accountname);
-            tv.setText(x.email);
+            SharedPreferences settings = getSharedPreferences("teacheruse_pref", 0);
+            tv2.setText(settings.getString("account","XXX"));
+            tv.setText(settings.getString("email","XXX"));
             img=(ImageView)header.findViewById(R.id.profile_image);
             img.setImageBitmap(x.b);
         }
@@ -222,6 +222,7 @@ public class addquestion extends AppCompatActivity implements addqMyLinearLayout
         }
     }
     public void headclick(View v) {
+        drawerLayout.closeDrawers();
         Intent it = new Intent(addquestion.this, fixhead.class);
         startActivityForResult(it, 0);
     }
