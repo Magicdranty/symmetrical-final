@@ -2,6 +2,7 @@ package com.example.jimmy.finall;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,8 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +27,7 @@ import com.github.clans.fab.FloatingActionButton;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,11 +38,13 @@ import java.net.URL;
 
 public class fixhead extends AppCompatActivity implements View.OnClickListener {
     FloatingActionButton f1, f2, f3;
-    ImageView img;
+    DrawerLayout drawerLayout;
+    NavigationView view;
+    ImageView img,imgdraw;
     Boolean ispick = false;
     private File tempFile;
     connectuse con;
-    String net="http://192.168.43.9/";
+    //String net="http://192.168.100.2/";
     private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 從相冊中選擇
     private static final int PHOTO_REQUEST_CUT = 3;// 結果
@@ -43,22 +52,78 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
     ProgressDialog dialog = null;
     TextView tv;
     final String uploadFilePath = "/mnt/sdcard/mypic/";
-   // final String uploadFileName=con.accountname ;
-   String uploadFileName;
+    String uploadFileName;
     String upLoadServerUri = null;
     int serverResponseCode = 0;
+    SharedPreferences settings;
+
     //////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fixhead);
-        img = (ImageView) findViewById(R.id.profile_image);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        settings = getSharedPreferences("teacheruse_pref", 0);
+        /////////
+        img=(ImageView)findViewById(R.id.profile_image1);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        view = (NavigationView) findViewById(R.id.navigation_view);
+        view.getMenu().findItem(R.id.navigation_item_1).setChecked(true);
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Toast.makeText(fixhead.this, menuItem.getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                drawerLayout.closeDrawers();
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_item_1:
+                        Toast.makeText(fixhead.this, "已經在主選單內", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.navigation_item_2:
+                        Intent it = new Intent(fixhead.this, ininreal.class);
+                        startActivity(it);
+                        break;
+                    case R.id.navigation_item_3:
+                        break;
+                    case R.id.navigation_item_4:
+                        break;
+                }
+                return true;
+            }
+        });
+        ////以下是更新帳戶名
+        if (view.getHeaderCount() > 0) {//如果有header 更新用戶名、email、頭貼
+            View header = view.getHeaderView(0);
+            TextView tv = (TextView) header.findViewById(R.id.textView2);
+            TextView tv2 = (TextView) header.findViewById(R.id.name);
+            connectuse x = (connectuse) fixhead.this.getApplication();
+            SharedPreferences settings = getSharedPreferences("teacheruse_pref", 0);
+            tv.setText(settings.getString("email", "XXX"));
+            tv2.setText(settings.getString("account", "XXX"));
+            imgdraw = (ImageView) header.findViewById(R.id.profile_image);
+            imgdraw.setImageBitmap(x.b);
+        }
+///
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        /////////////
         con = (connectuse) this.getApplication();
-        tempFile= new File(Environment.getExternalStorageDirectory() + "/mypic",
-                con.accountname+".png");
+        tempFile = new File(Environment.getExternalStorageDirectory() + "/mypic",
+                "t" + settings.getString("account", "XXX") + ".png");
         init();
 
-        uploadFileName=con.accountname+".png" ;
+        uploadFileName = "t" + settings.getString("account", "XXX") + ".png";
         f1 = (FloatingActionButton) findViewById(R.id.menu_item1);
         f2 = (FloatingActionButton) findViewById(R.id.menu_item2);
         f3 = (FloatingActionButton) findViewById(R.id.menu_item3);
@@ -67,32 +132,31 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
         f3.setOnClickListener(this);
         f1.setEnabled(false);
         tv = (TextView) findViewById(R.id.textView);
-        upLoadServerUri = net+"UploadToServer.php";
+        upLoadServerUri = "http://" + settings.getString("net", "XXX") + "/UploadToServer.php";
     }
 
     ////////////
     public void init() {
         if (Environment.getExternalStorageState()//確定SD卡可讀寫
-                .equals(Environment.MEDIA_MOUNTED))
-        {
+                .equals(Environment.MEDIA_MOUNTED)) {
             File sdFile = android.os.Environment.getExternalStorageDirectory();
             String path = sdFile.getPath() + File.separator + "mypic";
             File dirFile = new File(path);
-            if(!dirFile.exists()){//如果資料夾不存在
+            if (!dirFile.exists()) {//如果資料夾不存在
                 dirFile.mkdir();//建立資料夾
             }
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String imageUrl=( net+"uploads/"+con.accountname+".png");
+                String imageUrl = ("http://" + settings.getString("net", "XXX") + "/uploads/" + "t" + settings.getString("account", "XXX") + ".png");
                 try {
                     Log.e("!@!@!@", imageUrl);
                     URL url = new URL(imageUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    final  Bitmap b = BitmapFactory.decodeStream(input);
+                    final Bitmap b = BitmapFactory.decodeStream(input);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -106,6 +170,7 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
             }
         }).start();
     }
+
     //////////
     @Override
     public void onClick(View v) {
@@ -129,8 +194,6 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(fixhead.this, "2", Toast.LENGTH_SHORT).show();
                 Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // 指定調用相機拍照後照片的儲存路徑
-                cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(tempFile));//將路徑轉成URI
                 startActivityForResult(cameraintent, PHOTO_REQUEST_TAKEPHOTO);
                 break;
             case R.id.menu_item3:
@@ -149,9 +212,28 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case PHOTO_REQUEST_TAKEPHOTO:// 當選擇拍照時調用
-                startPhotoZoom(Uri.fromFile(tempFile));
-                Log.e("~~~~", "caminin");
-                ispick = false;
+                try {
+                    // 取得外部儲存裝置路徑
+                    Bundle extras = data.getExtras();
+                    Bitmap bmp = (Bitmap) extras.get("data");
+                    // 開啟檔案
+                    // 開啟檔案串流
+                    FileOutputStream out = new FileOutputStream(tempFile);
+                    // 將 Bitmap壓縮成指定格式的圖片並寫入檔案串流
+                    bmp.compress(Bitmap.CompressFormat.PNG, 40, out);
+                    // 刷新並關閉檔案串流
+                    out.flush();
+                    out.close();
+                    startPhotoZoom(Uri.fromFile(tempFile));
+                    Log.e("~~~~", "caminin");
+                    ispick = false;
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 break;
             case PHOTO_REQUEST_GALLERY:// 當選擇從本地獲取圖片時
                 // 做非空判斷，當我們覺得不滿意想重新剪裁的時候便不會報異常，下同
@@ -286,7 +368,7 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
 
                 // read file and write it into form...
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                Log.e("!inin","inin");
+                Log.e("!inin", "inin");
                 while (bytesRead > 0) {
 
                     dos.write(buffer, 0, bufferSize);
@@ -315,8 +397,8 @@ public class fixhead extends AppCompatActivity implements View.OnClickListener {
                                     + uploadFileName;
                             f1.setEnabled(false);
                             connectuse con = (connectuse) fixhead.this.getApplication();
-                            BitmapDrawable mDrawable =  (BitmapDrawable) img.getDrawable();
-                            con.b =mDrawable.getBitmap();
+                            BitmapDrawable mDrawable = (BitmapDrawable) img.getDrawable();
+                            con.b = mDrawable.getBitmap();
                             tv.setText(msg);
                             Toast.makeText(fixhead.this, "File Upload Complete.",
                                     Toast.LENGTH_SHORT).show();
